@@ -1,6 +1,9 @@
-# syntax=docker/dockerfile:
+# syntax=docker/dockerfile:1.0
+
 # Start from golang base image
-FROM golang:1.17.3 AS builder
+FROM golang:1.17.5-alpine AS builder
+
+# ENV GO111MODULE=on
 
 # Add Maintainer info
 LABEL maintainer="Hafidz98 <github.com/hafidz98>"
@@ -13,7 +16,8 @@ RUN apk update && apk add --no-cache git
 WORKDIR /app 
 
 # Copy go mod and sum files 
-COPY go.mod go.sum ./
+COPY go.mod ./
+COPY go.sum ./
 
 # Download all dependencies. Dependencies will be cached if the go.mod and the go.sum files are not changed 
 RUN go mod download
@@ -24,12 +28,12 @@ COPY . .
 # ENV MYSQL_PORT=3306
 
 # Build the Go app
-RUN CGO_ENABLED=0 GOOS=linux go build -a installsuffix cgo -o main .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 
 ### Deploy
 # Start a new stage from scratch
 FROM gcr.io/distroless/static-debian11
-RUN apk --no-cache add ca-certificates
+# RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
 
@@ -40,5 +44,5 @@ COPY --from=builder /app/.env .
 # Expose port 8080 to the outside world
 EXPOSE 3030
 
-#Command to run the executable
-CMD [ "./todo-api-app" ]
+# Command to run the executable
+CMD ["./main"]
