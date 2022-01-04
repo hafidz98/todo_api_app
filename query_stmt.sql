@@ -1,0 +1,24 @@
+CREATE DATABASE todos_api_db
+    DEFAULT CHARACTER SET = 'utf8mb4';
+
+CREATE TABLE activities(  
+    id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(100),
+    title VARCHAR(100),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME
+) DEFAULT CHARSET UTF8;
+
+CREATE TABLE todos(  
+    id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    activity_group_id VARCHAR(100),
+    title VARCHAR(100),
+    is_active VARCHAR(2),
+    priority VARCHAR(100),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME
+) DEFAULT CHARSET UTF8;
+
+INSErT INTO activities(email,title) VALUES ("","halo")
