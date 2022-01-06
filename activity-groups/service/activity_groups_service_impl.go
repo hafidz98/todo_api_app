@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/go-playground/validator"
+	"github.com/gobuffalo/nulls"
 	activitygroups "github.com/hafidz98/todo_api_app/activity-groups"
 	"github.com/hafidz98/todo_api_app/activity-groups/model/domain"
 	"github.com/hafidz98/todo_api_app/activity-groups/model/web"
@@ -60,8 +61,9 @@ func (service *ActivityGroupsServiceImpl) Create(context context.Context, reques
 	defer helper.CommitOrRollback(tx)
 
 	activityGroup := domain.ActivityGroups{
-		Email: request.Email,
-		Title: request.Title,
+		Email:     request.Email,
+		Title:     request.Title,
+		CreatedAt: nulls.String{},
 	}
 
 	activityGroup = service.ActivityGroupsRepository.Create(context, tx, activityGroup)
