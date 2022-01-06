@@ -52,6 +52,16 @@ func (service *TodosServiceImpl) SelectById(context context.Context, todoId int)
 	return todos.ToResponse(todosResult)
 }
 
+func (service *TodosServiceImpl) SelectByAgId(context context.Context, agId string) []web.TodosResponse {
+	tx, err := service.DB.Begin()
+	helper.PanicIfError(err)
+	defer helper.CommitOrRollback(tx)
+
+	todosResult := service.TodosRepository.SelectByAgId(context, tx, agId)
+
+	return todos.ToResponses(todosResult)
+}
+
 func (service *TodosServiceImpl) Create(context context.Context, request web.TodosCreateRequest) web.TodosResponse {
 	err := service.Validate.Struct(request)
 	helper.PanicIfError(err)

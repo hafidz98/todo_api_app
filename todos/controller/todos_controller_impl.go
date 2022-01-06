@@ -22,7 +22,15 @@ func NewTodosController(TodosService service.TodosService) TodosController {
 }
 
 func (controller *TodosControllerImpl) SelectAll(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
-	todoResponse := controller.TodosService.SelectAll(request.Context())
+	agId := request.URL.Query().Get("activity_group_id")
+	//request.URL.Query().Get()
+	var todoResponse []web.TodosResponse
+	if agId != "" {
+		todoResponse = controller.TodosService.SelectByAgId(request.Context(), agId)
+	} else {
+		todoResponse = controller.TodosService.SelectAll(request.Context())
+	}
+
 	apiResonse := api.ApiResponse{
 		Status:  "Success",
 		Message: "Success",

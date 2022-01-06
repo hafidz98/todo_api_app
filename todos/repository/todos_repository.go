@@ -10,6 +10,7 @@ import (
 type TodosRepository interface {
 	SelectAll(context context.Context, tx *sql.Tx) []domain.Todos
 	SelectById(context context.Context, tx *sql.Tx, todosId int) (domain.Todos, error)
+	SelectByAgId(context context.Context, tx *sql.Tx, agId string) []domain.Todos
 	Create(context context.Context, tx *sql.Tx, todos domain.Todos) domain.Todos
 	Update(context context.Context, tx *sql.Tx, todos domain.Todos) domain.Todos
 	Delete(context context.Context, tx *sql.Tx, todos domain.Todos)

@@ -48,6 +48,7 @@ func main() {
 
 	//?activity_group_id=
 	router.GET("/todo-items", todosController.SelectAll)
+	//router.GET("/todo-items", todosController.SelectById)
 	router.GET("/todo-items/:todoId", todosController.SelectById)
 	router.POST("/todo-items", todosController.Create)
 	router.PATCH("/todo-items/:todoId", todosController.Update)
