@@ -21,7 +21,17 @@ func ToResponse(todos domain.Todos) web.TodosResponse {
 func ToResponses(todos []domain.Todos) []web.TodosResponse {
 	var TodosResponses []web.TodosResponse
 	for _, todo := range todos {
-		TodosResponses = append(TodosResponses, ToResponse(todo))
+		todo := web.TodosResponse{
+			ID:              todo.ID,
+			ActivityGroupId: todo.ActivityGroupID,
+			Title:           todo.Title,
+			IsActive:        todo.IsActive,
+			Priority:        todo.Priority,
+			CreatedAt:       todo.CreatedAt,
+			UpdatedAt:       todo.UpdatedAt,
+			DeletedAt:       todo.DeletedAt,
+		}
+		TodosResponses = append(TodosResponses, todo)
 	}
 	return TodosResponses
 }

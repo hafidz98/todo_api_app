@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"github.com/go-playground/validator"
-	"github.com/gobuffalo/nulls"
 	"github.com/hafidz98/todo_api_app/exception"
 	"github.com/hafidz98/todo_api_app/helper"
 	"github.com/hafidz98/todo_api_app/todos"
@@ -46,9 +45,9 @@ func (service *TodosServiceImpl) SelectById(context context.Context, todoId int)
 	todosResult, err := service.TodosRepository.SelectById(context, tx, todoId)
 
 	if err != nil {
-		panic(exception.NewNotFound(strconv.Itoa(todoId)))
+		panic(exception.NewNotFound(strconv.Itoa(todoId), "Todo"))
 	}
-
+	//log.Println(todosResult)
 	return todos.ToResponse(todosResult)
 }
 
@@ -70,8 +69,9 @@ func (service *TodosServiceImpl) Create(context context.Context, request web.Tod
 	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
+	//id, _ := request.ActivityGroupId.Int64()
 	todosReq := domain.Todos{
-		ActivityGroupID: nulls.NewString(request.ActivityGroupId),
+		ActivityGroupID: request.ActivityGroupId,
 		Title:           request.Title,
 	}
 	//log.Println(todosReq)
@@ -90,12 +90,17 @@ func (service *TodosServiceImpl) Update(context context.Context, request web.Tod
 
 	todo, err := service.TodosRepository.SelectById(context, tx, request.ID)
 	if err != nil {
-		panic(exception.NewNotFound(strconv.Itoa(request.ID)))
+		panic(exception.NewNotFound(strconv.Itoa(request.ID), "Todo"))
 	}
 
-	todo.Title = request.Title
+	if request.Title != "" {
+		todo.Title = request.Title
+	}
+	todo.IsActive = request.IsActive
 
 	todo = service.TodosRepository.Update(context, tx, todo)
+	// log.Println("Di Service")
+	// log.Println(todo)
 	return todos.ToResponse(todo)
 }
 
@@ -106,7 +111,7 @@ func (service *TodosServiceImpl) Delete(context context.Context, todoId int) {
 
 	todo, err := service.TodosRepository.SelectById(context, tx, todoId)
 	if err != nil {
-		panic(exception.NewNotFound(strconv.Itoa(todoId)))
+		panic(exception.NewNotFound(strconv.Itoa(todoId), "Todo"))
 	}
 
 	service.TodosRepository.Delete(context, tx, todo)

@@ -59,7 +59,7 @@ func (controller *ActivityGroupsControllerImpl) Create(writer http.ResponseWrite
 		Data:    activityGroupResponse,
 	}
 
-	helper.WriteToResponseBody(writer, apiResonse)
+	helper.WriteToResponseBody201(writer, apiResonse)
 }
 
 func (controller *ActivityGroupsControllerImpl) Update(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {

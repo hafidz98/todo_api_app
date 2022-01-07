@@ -4,6 +4,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"reflect"
+	"strings"
 
 	"github.com/go-playground/validator"
 	agcontroller "github.com/hafidz98/todo_api_app/activity-groups/controller"
@@ -31,6 +33,12 @@ func main() {
 
 	DB := app.NewDB()
 	validate := validator.New()
+	var f string
+	validate.RegisterTagNameFunc(func(field reflect.StructField) string {
+		f = strings.SplitN(field.Tag.Get("json"), ",", 2)[0]
+		return f
+	})
+
 	activityGroupsRepository := agrepository.NewActivityGroupsRepository()
 	activityGroupsService := agservice.NewActivityGroupsService(activityGroupsRepository, DB, validate)
 	activityGroupsController := agcontroller.NewActivityGroupsController(activityGroupsService)

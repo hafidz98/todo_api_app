@@ -1,12 +1,14 @@
 package domain
 
-import "github.com/gobuffalo/nulls"
+import (
+	"github.com/gobuffalo/nulls"
+)
 
 type Todos struct {
 	ID              int
-	ActivityGroupID nulls.String
+	ActivityGroupID int
 	Title           string
-	IsActive        string
+	IsActive        bool
 	Priority        string
 	CreatedAt       nulls.String
 	UpdatedAt       nulls.String

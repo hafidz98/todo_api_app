@@ -27,6 +27,9 @@ func (controller *TodosControllerImpl) SelectAll(writer http.ResponseWriter, req
 	var todoResponse []web.TodosResponse
 	if agId != "" {
 		todoResponse = controller.TodosService.SelectByAgId(request.Context(), agId)
+		if todoResponse == nil {
+			todoResponse = make([]web.TodosResponse, 0)
+		}
 	} else {
 		todoResponse = controller.TodosService.SelectAll(request.Context())
 	}
@@ -57,6 +60,7 @@ func (controller *TodosControllerImpl) SelectById(writer http.ResponseWriter, re
 }
 
 func (controller *TodosControllerImpl) Create(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
+
 	todoCreateRequest := web.TodosCreateRequest{}
 	helper.ReadFromRequestBody(request, &todoCreateRequest)
 
@@ -69,7 +73,7 @@ func (controller *TodosControllerImpl) Create(writer http.ResponseWriter, reques
 		Data:    todoResponse,
 	}
 
-	helper.WriteToResponseBody(writer, apiResonse)
+	helper.WriteToResponseBody201(writer, apiResonse)
 }
 
 func (controller *TodosControllerImpl) Update(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
@@ -80,16 +84,17 @@ func (controller *TodosControllerImpl) Update(writer http.ResponseWriter, reques
 	helper.PanicIfError(err)
 
 	todoUpdateRequest.ID = id
-	controller.TodosService.Update(request.Context(), todoUpdateRequest)
+	todoResponse := controller.TodosService.Update(request.Context(), todoUpdateRequest)
 
-	todoResponse := controller.TodosService.SelectById(request.Context(), id)
-	apiResonse := api.ApiResponse{
+	// todoResponse := controller.TodosService.SelectById(request.Context(), id)
+	// log.Println(todoResponse)
+	apiResponse := api.ApiResponse{
 		Status:  "Success",
 		Message: "Success",
 		Data:    todoResponse,
 	}
-
-	helper.WriteToResponseBody(writer, apiResonse)
+	// log.Println(apiResponse)
+	helper.WriteToResponseBody(writer, apiResponse)
 }
 
 func (controller *TodosControllerImpl) Delete(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {

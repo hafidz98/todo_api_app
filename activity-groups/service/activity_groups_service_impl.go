@@ -46,13 +46,14 @@ func (service *ActivityGroupsServiceImpl) SelectById(context context.Context, ac
 	activityGroup, err := service.ActivityGroupsRepository.SelectById(context, tx, activityGroupId)
 
 	if err != nil {
-		panic(exception.NewNotFound(strconv.Itoa(activityGroupId)))
+		panic(exception.NewNotFound(strconv.Itoa(activityGroupId), "Activity"))
 	}
 
 	return activitygroups.ToResponse(activityGroup)
 }
 
 func (service *ActivityGroupsServiceImpl) Create(context context.Context, request web.ActivityGroupsCreateRequest) web.ActivityGroupsResponse {
+	//service.Validate.RegisterTagNameFunc()
 	err := service.Validate.Struct(request)
 	helper.PanicIfError(err)
 
@@ -80,7 +81,7 @@ func (service *ActivityGroupsServiceImpl) Update(context context.Context, reques
 
 	activityGroup, err := service.ActivityGroupsRepository.SelectById(context, tx, request.ID)
 	if err != nil {
-		panic(exception.NewNotFound(strconv.Itoa(request.ID)))
+		panic(exception.NewNotFound(strconv.Itoa(request.ID), "Activity"))
 	}
 
 	activityGroup.Title = request.Title
@@ -96,7 +97,7 @@ func (service *ActivityGroupsServiceImpl) Delete(context context.Context, activi
 
 	activityGroup, err := service.ActivityGroupsRepository.SelectById(context, tx, activityGroupId)
 	if err != nil {
-		panic(exception.NewNotFound(strconv.Itoa(activityGroupId)))
+		panic(exception.NewNotFound(strconv.Itoa(activityGroupId), "Activity"))
 	}
 
 	service.ActivityGroupsRepository.Delete(context, tx, activityGroup)

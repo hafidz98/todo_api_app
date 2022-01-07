@@ -20,15 +20,36 @@ func ErrorHandler(writer http.ResponseWriter, request *http.Request, err interfa
 	internalServerError(writer, request, err)
 }
 
+//func msgForTag(validator.FieldError)
+// func (fld reflect.StructField) msgVal() string {
+// 	msg, _ := fld.Tag.Lookup("json")
+// 	return msg
+// }
+
 func validationError(writer http.ResponseWriter, request *http.Request, err interface{}) bool {
-	_, ok := err.(validator.ValidationErrors)
+	//validator := new()
+	//val := validator.New()
+
+	exception, ok := err.(validator.ValidationErrors)
+	//log.Println(exception)
+
+	var msg string
+	// excep := exception[0]
+	// msg := excep.Field()
+
+	for _, excep := range exception {
+		msg = excep.Field()
+		// f, _ := reflect.TypeOf(args).Elem().FieldByName(msg)
+		// msg, _ = f.Tag.Lookup("json")
+	}
+
 	if ok {
 		writer.Header().Set("content-type", "applicaton/json")
 		writer.WriteHeader(http.StatusBadRequest)
 
 		apiResponses := api.ApiResponse{
 			Status:  "Bad Request",
-			Message: "title cannot be null",
+			Message: msg + " cannot be null",
 			Data:    make(map[string]string),
 		}
 
@@ -47,7 +68,7 @@ func notFoundError(writer http.ResponseWriter, request *http.Request, err interf
 
 		apiResponses := api.ApiResponse{
 			Status:  "Not Found",
-			Message: "Activity with ID " + exception.Error + " Not Found",
+			Message: exception.From + " with ID " + exception.Error + " Not Found",
 			Data:    make(map[string]string),
 		}
 

@@ -27,9 +27,9 @@ func (repository *TodosRepositoryImpl) SelectAll(context context.Context, tx *sq
 		err := rows.Scan(
 			&todo.ID,
 			&todo.ActivityGroupID,
+			&todo.Title,
 			&todo.IsActive,
 			&todo.Priority,
-			&todo.Title,
 			&todo.CreatedAt,
 			&todo.UpdatedAt,
 			&todo.DeletedAt,
@@ -105,8 +105,8 @@ func (repository *TodosRepositoryImpl) Create(context context.Context, tx *sql.T
 }
 
 func (repository *TodosRepositoryImpl) Update(context context.Context, tx *sql.Tx, todo domain.Todos) domain.Todos {
-	query := "UPDATE todos SET title = ? WHERE id = ?"
-	_, err := tx.ExecContext(context, query, todo.Title, todo.ID)
+	query := "UPDATE todos SET title = COALESCE(?, title), is_active = COALESCE(?, is_active) WHERE id = ?"
+	_, err := tx.ExecContext(context, query, todo.Title, todo.IsActive, todo.ID)
 	helper.PanicIfError(err)
 	return todo
 }

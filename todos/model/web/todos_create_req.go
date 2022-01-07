@@ -1,6 +1,6 @@
 package web
 
 type TodosCreateRequest struct {
-	ActivityGroupId string `json:"activity_group_id"`
-	Title           string `validate:"required" json:"title"`
+	ActivityGroupId int    `json:"activity_group_id" validate:"required"`
+	Title           string `json:"title" validate:"required"`
 }
