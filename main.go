@@ -28,6 +28,10 @@ import (
 	-asdfljasdflj
 */
 
+func init() {
+	app.NewMigrate()
+}
+
 func main() {
 	log.Println("Todos API APP start") //TODO: aaaaaa
 

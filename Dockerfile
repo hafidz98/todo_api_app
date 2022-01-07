@@ -41,6 +41,8 @@ WORKDIR /root/
 COPY --from=builder /app/main .
 COPY --from=builder /app/.env .
 
+COPY --from=builder /app/migrations ./migrations
+
 # Expose port 8080 to the outside world
 EXPOSE 3030
 

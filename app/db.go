@@ -17,7 +17,6 @@ func NewDB() *sql.DB {
 	helper.PanicIfError(err)
 
 	host := os.Getenv("MYSQL_HOST")
-	//port := os.Getenv("MYSQL_PORT")
 	port := os.Getenv("MYSQL_PORT")
 	username := os.Getenv("MYSQL_USER")
 	password := os.Getenv("MYSQL_PASSWORD")
@@ -31,8 +30,8 @@ func NewDB() *sql.DB {
 	log.Println(dsn)
 	//log.Println("Database host: port:")
 
-	db.SetMaxIdleConns(2)
-	db.SetMaxOpenConns(20)
+	db.SetMaxIdleConns(20)
+	db.SetMaxOpenConns(100)
 	db.SetConnMaxLifetime(60 * time.Minute)
 	db.SetConnMaxIdleTime(10 * time.Minute)
 
