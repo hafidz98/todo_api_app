@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"reflect"
+	"runtime"
 	"strings"
 
 	"github.com/go-playground/validator"
@@ -35,6 +36,8 @@ func init() {
 func main() {
 	log.Println("Todos API APP start") //TODO: aaaaaa
 
+	runtime.GOMAXPROCS(2)
+
 	DB := app.NewDB()
 	validate := validator.New()
 	var f string
@@ -52,19 +55,19 @@ func main() {
 	todosController := tdcontroller.NewTodosController(todosService)
 
 	router := httprouter.New()
-	router.GET("/activity-groups", activityGroupsController.SelectAll)
-	router.GET("/activity-groups/:activityGroupId", activityGroupsController.SelectById)
-	router.POST("/activity-groups", activityGroupsController.Create)
-	router.PATCH("/activity-groups/:activityGroupId", activityGroupsController.Update)
-	router.DELETE("/activity-groups/:activityGroupId", activityGroupsController.Delete)
+	go router.GET("/activity-groups", activityGroupsController.SelectAll)
+	go router.GET("/activity-groups/:activityGroupId", activityGroupsController.SelectById)
+	go router.POST("/activity-groups", activityGroupsController.Create)
+	go router.PATCH("/activity-groups/:activityGroupId", activityGroupsController.Update)
+	go router.DELETE("/activity-groups/:activityGroupId", activityGroupsController.Delete)
 
 	//?activity_group_id=
-	router.GET("/todo-items", todosController.SelectAll)
+	go router.GET("/todo-items", todosController.SelectAll)
 	//router.GET("/todo-items", todosController.SelectById)
-	router.GET("/todo-items/:todoId", todosController.SelectById)
-	router.POST("/todo-items", todosController.Create)
-	router.PATCH("/todo-items/:todoId", todosController.Update)
-	router.DELETE("/todo-items/:todoId", todosController.Delete)
+	go router.GET("/todo-items/:todoId", todosController.SelectById)
+	go router.POST("/todo-items", todosController.Create)
+	go router.PATCH("/todo-items/:todoId", todosController.Update)
+	go router.DELETE("/todo-items/:todoId", todosController.Delete)
 
 	router.PanicHandler = exception.ErrorHandler
 
